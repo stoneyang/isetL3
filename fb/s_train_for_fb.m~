@@ -1,4 +1,0 @@
-clear, clc, close all
-
-%%
-L3 = L3Initialize_fb(); 

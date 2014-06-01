@@ -1,4 +1,21 @@
 clear, clc, close all
 
-rawim = loadraw('001_Sunny_f16.0.RAW');
-img = imread('Sunny.JPG');
+%%
+s_initISET
+
+%% Load scene
+scene = sceneFromFile('AsianWoman_1.mat','multispectral');
+
+%% Render images
+sz = sceneGet(scene, 'size');
+
+%% Load camera
+load('L3camera_fb.mat');
+
+%% Specify luminance levels
+luminances = [1, 80];
+
+for lum = luminances
+    srgbResult = cameraComputesrgb(camera, scene, lum, sz, [], [], 1);
+    imwrite(srgbResult, ['srgb_fb_lum_' num2str(lum) '.png']);
+end
