@@ -42,8 +42,8 @@ pixel = pixelSet(pixel,'sizesamefillfactor',[5e-6 5e-6]);
 % We know that the well capacity is 24000 e but I can't find the sensor
 % voltage....
 
-vSwing = 1;
-sensor = sensorSet(sensor,'analogOffset',0.0273*vSwing);
+vSwing = 1.8;
+sensor = sensorSet(sensor,'analogOffset',0.0273/1.8*vSwing);
 
 sensor = sensorSet(sensor,'pixel',pixel);
 sensor = pixelCenterFillPD(sensor,0.5); % This is just a random fill factor guess.

@@ -10,12 +10,12 @@ scene = sceneFromFile('AsianWoman_1.mat','multispectral');
 sz = sceneGet(scene, 'size');
 
 %% Load camera
-load('L3camera_fb.mat');
+load('L3camera_fb_nooffset.mat');
 
 %% Specify luminance levels
 luminances = [1, 80];
 
 for lum = luminances
     srgbResult = cameraComputesrgb(camera, scene, lum, sz, [], [], 1);
-    imwrite(srgbResult, ['srgb_fb_lum_' num2str(lum) '.png']);
+    imwrite(srgbResult, ['srgb_fb_lum_' num2str(lum) '_nooffset.png']);
 end
