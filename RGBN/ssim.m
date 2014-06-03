@@ -1,5 +1,5 @@
 function [mssim, ssim_map] = ssim(nResult, nIdeal)
-nResult_norm = nResult / max(nResult(:));
+nResult_norm = nResult / max(nIdeal(:));
 nIdeal_norm = nIdeal / max(nIdeal(:));
 
 nResult_uint8 = uint8(nResult_norm * 255);
