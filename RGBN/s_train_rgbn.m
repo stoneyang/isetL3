@@ -4,8 +4,7 @@ s_initISET
 for ii = [1, 3, 5]
     %% Create L3 structure
     L3 = L3Initialize(); 
-
-    name = ['RGBN' num2str(ii)];
+    name = ['RGBN' num2str(ii) '_low'];
     cfaFile = [name '.mat'];
     scenes = L3Get(L3,'scene');
     wave = sceneGet(scenes{1}, 'wave');   %use the wavelength samples from the first scene
