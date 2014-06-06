@@ -11,7 +11,7 @@ lum = 80;
 
 %% Render
 for ii = [1, 3, 5]
-    load(['L3camera_RGBN' num2str(ii) '.mat']); 
+    load(['L3camera_RGBN' num2str(ii) '_low.mat']); 
     rand('seed', 10);
     randn('seed', 10);
     [nIdeal, camera, srgbResult, srgbIdeal, raw] = cameraComputesrgb_RGBN(camera, scene, lum, sz, [], [], 0);
