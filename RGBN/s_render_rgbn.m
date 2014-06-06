@@ -18,12 +18,14 @@ for ii = [1, 3, 5]
     nResult = camera.vci.L3.L3n;
     nResult = nResult / mean(nResult(:)) * mean(nIdeal(:));
     
-    MSE = sum(sum((nIdeal/max(nIdeal(:)) - nResult/max(nIdeal(:))).^2)) / length(nIdeal(:))
+    disp(['------------   ii = ',num2str(ii),'  ---------------'])
     
-    PSNR = - 10 * log10(MSE)
-    
+    meanbias = cameraBias_rgbn(camera, lum)
+    MSE = sum(sum((nIdeal/max(nIdeal(:)) - nResult/max(nIdeal(:))).^2)) / length(nIdeal(:));    
+    PSNR = - 10 * log10(MSE)    
     mssim = ssim(nResult, nIdeal)
+    vSNR = cameraVSNR_rgbn(camera, lum)        
     
-    figure, imagesc(nResult)
+    figure, imagesc(nResult), axis image, title(num2str(ii)), colormap(gray)
 end
-%%
+figure, imagesc(nIdeal), axis image, title('Ideal'), colormap(gray)

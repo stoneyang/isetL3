@@ -102,7 +102,7 @@ scene = sceneSet(scene,'fov',scenefov);
 % Adjust mean luminance
 scene = sceneAdjustLuminance(scene,meanLuminance);
 
-if ~exist('plotFlag','var') || isempty(plotFlag), plotFlag = 2; end
+if ~exist('plotFlag','var') || isempty(plotFlag), plotFlag = 0; end
 
 %% Calculate ideal XYZ image
 [camera,xyznIdeal] = cameraCompute_RGBN(camera,scene,'idealxyz');
@@ -137,7 +137,7 @@ end
 
 %% RAW
 if nargout>=3
-    raw = cameraGet(camera,'sensor volts');
+    raw = cameraGet(camera,'sensor','volts');
     raw = raw(11:(end-10), 11:(end-10), :);
 end
 

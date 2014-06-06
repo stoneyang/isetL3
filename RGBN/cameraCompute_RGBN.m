@@ -1,4 +1,9 @@
 function [camera,img] = cameraCompute_RGBN(camera,pType,mode,sensorResize)
+
+% for idealXYZ mode, img has 4 channels, XYZ and N
+% otherwise it outputs lrgb, but n image is in camera.vci.L3.L3n
+
+
 % Compute an image of a scene using a camera model
 %
 %   [camera,img] = cameraCompute(camera,pType,mode,sensorResize)
