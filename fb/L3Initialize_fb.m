@@ -43,6 +43,6 @@ L3 = L3InitMonochromeSensor_fb(L3);
 L3 = L3InitIdealFilters(L3);
 
 %% L3 Training Parameters
-L3 = L3InitParams(L3);
+L3 = L3InitParams_fb(L3);
 
 end

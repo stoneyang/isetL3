@@ -13,7 +13,7 @@ function L3 = L3InitDesignSensor_fb(L3)
 scenes = L3Get(L3,'scene');
 wave = sceneGet(scenes{1}, 'wave');   %use the wavelength samples from the first scene
 
-sensorD = fbCreate_fb(wave);
+sensorD = fbCreate(wave);
 
 % Build design sensor
 sensorD = sensorSet(sensorD, 'name', 'Design sensor');
