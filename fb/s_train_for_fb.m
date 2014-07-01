@@ -13,5 +13,5 @@ L3 = L3Train_fb(L3);
 camera = L3CameraCreate(L3);
 
 %% Save data
-save('L3camera_fb_nooffset', 'camera');
-save('L3_fb_nooffset', 'L3');
+save('L3camera_fb', 'camera');
+save('L3_fb', 'L3');
