@@ -12,4 +12,5 @@ fbSensor = fbRead(fName);
 camera.sensor = fbSensor;
 
 %%
-[camera,img] = cameraCompute(camera, 'sensor');
+[camera,lrgbResult] = cameraCompute(camera, 'sensor');
+srgbResult = lrgb2srgb(ieClip(lrgbResult,0,1));

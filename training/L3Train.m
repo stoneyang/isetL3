@@ -27,8 +27,7 @@ function L3 = L3Train(L3)
 
 %% Compute sensor volts for a monochrome sensor
 [desiredIm, inputIm] = L3SensorImageNoNoise(L3);
-
-
+  
 %% Load texture tree variables
 numclusters    = L3Get(L3,'n clusters');
 lumList    = L3Get(L3,'luminance list');
@@ -247,15 +246,6 @@ for rr=1:size(cfaPattern,1)
                 end % end if statement that skips luminance values with not enough patches
             end % end loop over luminance values            
         end   % end while statement for all saturation cases
-        
-       for %all sat case
-           L3 = L3Set(L3,'saturation case');
-           if sum(L3Get(L3,'luminance saturation case'))==0
-               % no filters stored for this saturation case, delete it
-               L3 = L
-           end
-       end
-        
     end  % end loop for patch type col
 end  % end loop for patch type row
 

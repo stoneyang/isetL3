@@ -1,0 +1,9 @@
+Modifications made to the core L3 codes
+
+1, ideal sensor and design sensor
+Change to only have one design sensor, and then use a function to decrease the design sensor to a monochrome sensor, which is combined with the ideal filters to be the ideal sensor
+
+2, analog gain and the offset
+substract any agalog gain and the offset before training and rendering
+
+3, empty filters
