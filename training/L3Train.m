@@ -27,8 +27,7 @@ function L3 = L3Train(L3)
 
 %% Compute sensor volts for a monochrome sensor
 [desiredIm, inputIm] = L3SensorImageNoNoise(L3);
-
-
+  
 %% Load texture tree variables
 numclusters    = L3Get(L3,'n clusters');
 lumList    = L3Get(L3,'luminance list');
