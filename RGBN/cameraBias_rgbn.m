@@ -2,6 +2,11 @@ function meanbias = cameraBias_rgbn(camera, lum)
 
 % Modeled after s_imageReflectanceChart
 
+%% Change optics
+camera.oi.optics.offaxis = 'skip';
+camera.oi.optics.model = 'skip';
+
+
 %% Make a reflectance chart
 
 % The XYZ values of the chart are in the scene.chartP structure
@@ -20,6 +25,18 @@ nResult = nResult / mean(nResult(:)) * mean(nIdeal(:));
 
 ip = cameraGet(camera,'ip');
 ip = imageSet(ip,'Result',repmat(nResult,[1,1,3]));
+
+%%
+figure
+imagesc(nIdeal)
+axis image
+title('Ideal')
+
+figure
+imagesc(nIdeal)
+axis image
+title('Estimated')
+
 
 %% Collect up the chart ip data and the original XYZ
 
