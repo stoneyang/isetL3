@@ -33,8 +33,244 @@ function [val, L3] = L3Get(L3,param,varargin)
 %    type
 %    patch type
 %    lum type
-%
 %    rendering illuminant
+%    saturation type - Which saturation case for the local patch
+%         
+%    scenes -  A cell array of scenes
+%    nscenes - 
+%    training illuminant -  Illuminant from first scene used for training
+%    rendering illuminant - The target illuminant L3 tries to match.
+%       Scenes can only be rendered under this illuminant with the corresponding filters.  
+%    oi - The optical image is here mainly for lens information. 
+%    monochromesensor - ISET monochrome sensor structure. We store the design sensor and
+%         make a monochrome version of it.
+%    ideal filters - These are the filters used for the ideal sensor to
+%                    create the training data set. 
+%    n ideal filters - 
+%    ideal filtername - 
+%    ideal filterwave - 
+%    ideal filter transmissivities - 
+%    ideal filternames - 
+%    design sensor - This is the sensor we are trying to design. It can have an
+%                     unusual CFA and color filters
+%    design filter vals - 
+%    n design filters - 
+%    cfa pattern - The design sensor has a cfa pattern. The ideal is monochrome
+%    design filter transmissivities - 
+%         
+% Data for training
+%     patches - Design sensor training patches.
+%         % If saturation indices has not yet been determined, return all
+%         % patches.  But if saturation indices has already been found, only
+%         % return the patches that match the current saturation type.
+%         % 
+%         % This change is easiest to adapt to multiple saturation cases, but
+%         % it might be a little risky.
+%     patches no 0 - 
+%         % Patches but with measurements for saturated channels not replaced
+%         % with 0.  Getting sensor patches (above) returns 0 for all pixels
+%         % that measure a saturated channel for the current saturated index.
+%         % Sometimes we don't want that such as get 
+%         % 'patch saturation'.
+%     n sensor patches - 
+%         % How many patches currently stored
+%         % This has two modes - very similar to 'patches' above
+%     patches noisy - 
+%         % We reset the random number generator to the initial configuration
+%         % here.  To think.
+%     patch luminances - 
+%     patch means - 
+%         % Mean in each color channel for each patch
+%     patches zero mean - 
+%     patch contrasts - 
+%     patch contrasts noisy - 
+%     voltage max - 
+%         % maximum voltage after deleting analog gain/offset
+%         % Actual voltage swing of pixel is higher.  But after we delete the
+%         % offset, the maximum voltage is reduced to this value.
+%         %
+%         % For example original data is in interval [ao/ag, voltageswing]
+%         % but new range is [0, voltageswing-ao/ag]
+%       
+%     patch saturation case - 
+%         % matrix giving the saturation case for each patch
+%         % Since we have already done most of the calculation, let's find
+%         % and save saturation indices (see L3Get 'saturationindices').
+%         % This prevents us from needing to run this calculation again.
+%     texture patches - 
+%         % Retrieve the textured patches (i.e., patches with a contrast
+%         % exceeding the threshold.  These are just the patches for the
+%         % current patch type.
+%     ideal vector - ;
+%         % These are number of colors x number of samples
+%         % These are the ideal (correct) values for the center pixel.
+%         % This has two modes - very similar to 'patches' above
+%     blockwidth - 
+%         % Fix this.
+%     blockrowcol','blocksize - 
+%     n samples per patch - 
+%         % Number of samples in the block used for training
+%         
+% Filters.  Format needs to be described.
+%     filters - 
+%         % Whole structure
+%     global filter -                 
+%     luminance filter - ;
+%         % lFilter = L3Get(L3,'luminance filter',patchType,satType)
+%         % luminancefilter is a vector that is used to calculate the patch
+%         % luminance.
+%         % We take the inner product of this vector and the patch to
+%         % calculate the luminance level of the patch.  By luminance we mean
+%         % really the weighted average voltage.  We call this
+%         % patchluminance.
+%         %
+%         % patchluminance is calculated as follows:
+%         %   1.  find mean of each measured color channel
+%         %   2.  patchluminance is the mean of these values
+%         %
+%         % This is not quite the same as averaging all because there may not
+%         % be the same number of color samples in each patch.
+%         %
+% 
+%         
+%         % Line immediately following counts a completely black color
+%         % filter, X, when finding the luminance.  This can cause problems.
+%         % We can ignore the X pixels by checking if the filter has any
+%         % positive values.  (Similar to L3Get(L3,'X pixels'))
+% 
+%         
+%     mean filters - 
+%         % Create vectors to multiply by the patch data and calculate the
+%         % average value for each color type.
+%     flat filters - 
+%     texture filters - 
+% % Patch classification parameters
+%     flip - 
+%         % A structure indicating whether or not to flip the patch,
+%         % depending on the presence of symmetry in the block pattern over
+%         % each direction.
+%     block pattern - 
+%         % Returns the cfa values in the block centered at a pixel in
+%         % position (r,c) of the design sensor
+%     saturation pixels - 
+%         % Binary vector indicating which pixels belong to saturated color
+%         % channels for current saturation case  (Format is same as a
+%         % column of patches)
+%     xpixels - 
+%         % Binary vector indicating which pixels do not have a measurement
+%         % In reality they probably have a measurement that should not be
+%         % used for the current application.  (Format is same as a
+%         % column of patches)
+%     flat indices - 
+%         % These patches have low contrast
+% 
+%         % The first time flat indices is gotten it is calculated and
+%         % stored. Subsequent times it is loaded and not calculated.
+%         % These indices are cleared each time the patch type, luminance
+%         % type, or saturation type change.
+% 
+%     texture indices - 
+%     saturation indices - 
+%         % These are the patches that match the desired saturation case
+%         
+%         % The first time saturation indices is gotten it is calculated and
+%         % stored (also stored for L3Get 'patchsaturation'. Subsequent
+%         % times it is loaded and not calculated. These indices are cleared
+%         % each time the patch type, luminance type, or saturation type
+%         % change.
+%        
+%     nclusters - Binary tree, I guess.
+%         
+%  Training parameters
+%     training - The whole structure.
+%     n over sample - 
+%     saturation flag - 
+%     n training patches -         
+%     max training patches - 
+%         % Maximum number of training patches for patch type 
+%         % (see L3trainingPatches.m)
+%     random seed - 
+%     max tree depth - 
+%         % When we cluster the textures, this is how many levels
+%     flat percent - 
+%     min non sat channels - 
+%         % Minimum number of non-saturated (good) channels in order to train
+%         % a filter.  For example if we want XYZ out, it is hopeless to
+%         % train filters that can only use 2 good input channels.
+%     luminance list - ;  % We create filters for each luminance level
+%         % This can be a vector, and without an argument the whole vector is
+%         % returned.  If a number is passed in, then that entry of the
+%         % vector is returned.
+%     luminance saturation case - 
+%         % For the current patch type and saturation case, which of the
+%         % entries in the luminance list were actually trained (For each
+%         % patch type and saturation case, any luminance value that did not
+%         % have enough training patches was not trained.)
+%         % This returns indices to the luminance list.  The actual luminance
+%         % values are obtained from the luminance list.             
+%     saturation list - ;  % We create filters for each saturation case        
+%         % Without an argument the whole matrix is returned.  If a number is
+%         % passed in, then that column of the matrix is returned.
+%         % Each column is a binary vector with length equal to the number of
+%         % color channels in the CFA.  The entry is 1 if the corresponding
+%         % color channel is saturated.
+%         % Only the saturation cases that occur for the training data are
+%         % trained and stored.
+%     length saturation list  -  Number of saturation cases in list      
+%     desired patch luminance - 
+%         
+% Cluster (Texture) analysis related
+%     clusters -  The whole structure
+%     pca  - Principal component analysis structure
+%     cluster members - 
+%     cluster thresholds - 
+%     flat threshold - 
+%         
+% Processing properties
+%     luminance index - 
+%         % When we process an image, we can remember here which patch was
+%         % interpreted by which luminance training level.
+%     saturation index - 
+%         % When we process an image, we can remember here which patch was
+%         % interpreted by which saturation case.
+%     cluster index - 
+%         % When we process an image, we can remember here which patch was
+%         % flat (0) or texture (positive number giving texture cluster)
+%     border width - 
+%         %Tells how many pixels wide the black border is around an image.
+%         %The border is caused by the inability to fit an entire patch
+%         %centered at a pixel near the edge of the image.
+%     xyz result - 
+%         % When we process an image, we can remember here the xyz output.   
+%     weight color transform - 
+%         % Color transform used to weight cost of bias and variance errors.
+%         % If we want to choose different weights for bias/variance tradeoff
+%         % for each color channel, this matrix is needed to define the color
+%         % channels where the weighting is performed.  If this is not
+%         % desired, an identity matrix or a scalar of 1 can be used.
+%         % See L3findRGBWcolortransform        
+%     weight bias variance - 
+%         % Weights for bias and variance tradeoff when finding filters.
+%         % Larger value means variance (noise) is more costly and should be
+%         % avoided. Value of 1 implies minimum squared error is desired 
+%         % (equal weight to bias and variance). See L3findfilters.  
+%         % It's a length 3 vector with each component corresponding to the 
+%         % desired weight for output channels. In luminance channel, large
+%         % weight blurs images. In chromance channel, large weight
+%         % desaturats color. 
+%         % Flat and texture regions have different weights setting. In this
+%         % way, we can blur the flat regions more to decrease noise while
+%         % keeping the sharpness of the texture regions. 
+%         % It's used across the full range of luminance levels. It mainly
+%         % works for low light condition, and has neglectable influence when
+%         % it's bright. 
+%     contrast type - 
+%     rendering -  The whole structure.
+%     transition contrast - 
+%     transition contrast low - 
+%     transition contrast high - 
+%     transition indices - 
+%     transition weights flat - 
 %
 % (c) Stanford VISTA Team, 2014
 
