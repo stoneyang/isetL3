@@ -15,7 +15,7 @@ function L3 = L3findnewsaturationcases(L3)
 saturationlist = L3Get(L3,'saturation list');
 
 % Each column gives the saturation case for the corresponding patch
-[saturationcases, L3] = L3Get(L3,'sensor patch saturation');
+[saturationcases, L3] = L3Get(L3,'patch saturation');
 
 %% Remove saturation cases that are contained in saturation list
 for listindex = 1:size(saturationlist,2)

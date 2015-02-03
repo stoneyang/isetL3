@@ -56,7 +56,7 @@ if noiseFlag == 0
     noisevar = 0;
 else  % noiseFlag~=0
     % There is noise.  Find it.
-    patches = L3Get(L3,'sensor patches');
+    patches = L3Get(L3,'patches');
     centroid=mean(patches(:,patchindices),2);    
     noisevar=L3findnoisevar(sensor,centroid);
     noisevar=sum(patchindices)*noisevar;

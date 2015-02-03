@@ -1,8 +1,7 @@
 function L3 = L3addSaturationCase(L3, saturationcase)
-
-% Adds a saturation case to the list of saturation cases to train on
+% Adds a saturation training case to the list of saturation cases
 %
-% L3 = L3addSaturationCase(L3, saturationcase)
+%   L3 = L3addSaturationCase(L3, saturationcase)
 %
 % saturationcase:   Binary vector with length equal to the number of color
 %                   channels in the CFA.  The entry is 1 if the
@@ -15,9 +14,13 @@ function L3 = L3addSaturationCase(L3, saturationcase)
 % The saturation list starts as all 0's aka no saturation.  During training
 % when pixels saturate, any new saturation case will be added to the
 % list to later be trained.
+%
+% QT, Vistasoft Team, 2012
 
 if mean(saturationcase)<1   % ignore the case where all channels are saturated
     saturationlist = L3Get(L3, 'saturation list');
     saturationlist(:, end+1) = saturationcase;
     L3 = L3Set(L3, 'saturation list', saturationlist);
+end
+
 end

@@ -18,9 +18,9 @@ function L3 = L3Set(L3,param,val,varargin)
 %   L3Set(L3,'sensor exptime',0.05);  % This is the design.sensor
 %
 % Parameter list
-%     name - This L3's name
-%     type - always 'L3'
-%     patchtype - 
+%     name -  L3's name
+%     type -  Always 'L3'
+%     patch type - 
 %     scenes    -  Cell array of scenes
 %     training illuminant- ;  %Illuminant from first scene used for training
 %         This is stored with the camera so incoming scenes can be set to
@@ -28,57 +28,56 @@ function L3 = L3Set(L3,param,val,varargin)
 %     rendering illuminant- ; % The target illuminant L3 tries to match.
 %         Scenes can only be rendered under this illuminant with the corresponding filters.
 %     oi -      % For lens information?  Maybe just optics?
-%     sensordesign','designsensor- ;
-%         ISET Sensor structure.  Adjust using sensorSet.
+%     sensor design -  ISET Sensor structure.  Adjust using sensorSet.
 %
-%     idealfilters','idealsensorfilters- 
+%     ideal sensor filters- 
 %         Structure for color filters used in front of monochrome sensor
-%     idealfiltername- 
-%     idealfiltertransmissivities- 
-%     idealfilternames- 
+%     ideal filtername- 
+%     ideal filter transmissivities- 
+%     ideal filternames- 
 %
 %         Data for training
-%     sensorpatches','spatches- 
+%     patches - 
 %         Save training patches from sensor for a particular patch type and
 %         luminance type
-%     sensorpatchessaturationcase- 
+%     patches saturation case- 
 %         Same as above but only overwrite the patches for current
 %         saturation indices
 %
-%     nsaturationpatches- 
+%     n saturation patches- 
 %         Number of saturation patches used when training this particular
 %         type of patch (patch type, luminance type, saturation type)
 %
-%     idealvector','ivector- 
+%     ideal vector - 
 %         The ideal (correct) values for the center pixel for this patch
 %         type and luminance type
 %
 %         Filters.  Format needs to be described.
-%     filters-   % Whole structure
-%     globalfilter- 
-%     flatfilter- 
-%     texturefilter- 
-%     emptyfilter- 
+%     filters       -   % Whole structure
+%     globalfilter  - 
+%     flatfilter    - 
+%     texturefilter - 
+%     emptyfilter   - 
 %         val is ignored
 %         Fill in empty matrix in filter structure at current patch type,
 %         luminance, and saturation.  This is used if there are not enough
 %         patches for training this case.
 %
 %         Other Patch training parameters
-%     training- 
+%     training    - 
 %         The whole structure.
-%     noversample- 
+%     noversample - 
 %         Controls over sampling.  Describe here
-%     saturationflag- 
+%     saturationflag - 
 %         Use saturation or not ... probably shouldn't be a flag.
-%     ntrainingpatches','npatches- 
-%     maxtrainingpatches- 
+%     n training patches - 
+%     max training patches - 
 %         Maximum number of training patches for patch type
 %         (see L3trainingPatches.m)
-%     randomseed - 
-%     flatpercent - 
+%     random seed - 
+%     flat percent - 
 %         Percentage of patches we want to treat as flat
-%     minnonsatchannels - 
+%     min nonsat channels - 
 %         Minimum number of non-saturated (good) channels in order to train
 %         a filter.  For example if we want XYZ out, it is hopeless to
 %         train filters that can only use 2 good input channels.
@@ -90,38 +89,36 @@ function L3 = L3Set(L3,param,val,varargin)
 %         Integer giving the index into luminancelist for the current
 %         luminance level.
 %
-%      saturationlist - ;
+%      saturation list - ;
 %         We create filters for each saturation case in the list.
 %         At end of training, list should contain all saturation cases that
 %         occur in training data.
 %
-%     sattype','saturationtype - 
+%      saturationtype - 
 %         Integer giving the index into saturationlist for the current
 %         saturation case.
-%     blocksize - 
+%      block size - 
 %         The size of the block (patch) used for training.
 %         This should probably be a 2-vector in general.
 %         But it could be a single number.  To decide and get clear.
-%     clusters - The whole structure
-%     cluster directions - 
-%     clustermembers - 
-%     clusterthresholds - 
-%     clusterflatthreshold','flatthreshold - 
-%     saturationindices - 
-%     luminanceindex - 
-%     saturationindex - 
-%     clusterindex - 
-%     xyzresult - 
-%     weightcolortransform - 
-%     globalweightbiasvariance - 
-%     flatweightbiasvariance - 
-%     textureweightbiasvariance - 
-%     contrasttype - 
-%     rendering - 
-%     transitioncontrastlow - 
-%     transitioncontrasthigh - 
-%   type
-%   ...
+%      clusters - The whole structure
+%      cluster directions - 
+%      cluster members - 
+%      cluster thresholds - 
+%      cluster flat threshold - 
+%      saturation indices - 
+%      luminance index - 
+%      saturation index - 
+%      clusterindex - 
+%      xyz result - 
+%      weight color transform - 
+%      global weight bias variance - 
+%      flat weight bias variance - 
+%      texture weight bias variance - 
+%      contrast type - 
+%      rendering - 
+%      transition contrast low - 
+%      transition contrast high - 
 %
 %
 % Programming todo:  Deal with ieParameterOtype as per the rest of ISET.
@@ -234,12 +231,12 @@ switch param
         L3.sensor.idealFilters.filterNames = val;
         
         % Data for training
-    case{'sensorpatches','spatches'}   
+    case{'patches','spatches'}   
         % Save training patches from sensor for a particular patch type and
         % luminance type
         L3.data.patches = val;
         L3 = L3ClearIndicesData(L3);  % reset flat and saturation indices
-    case{'sensorpatchessaturationcase'}   
+    case{'patchessaturationcase'}   
         % Same as above but only overwrite the patches for current
         % saturation indices
         saturationindices = L3Get(L3, 'saturation indices');

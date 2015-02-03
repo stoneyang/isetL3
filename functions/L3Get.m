@@ -54,7 +54,7 @@ val = [];
 %  v = L3Get(L3,'sensor exptime','ms');
 %  v = L3Get(L3,'oi optics/fnumber');
 if isequal(oType,'sensor')
-    if isempty(p), val = L3.sensor.design; return;
+    if isempty(p) || strcmp(p,'design'), val = L3.sensor.design; return;
     else
         if isempty(varargin), val = sensorGet(L3.sensor.design,p);
         elseif length(varargin) == 1
@@ -183,8 +183,8 @@ switch(param)
         val = sensorGet(sensor,'spectral QE');
         
         % Data for training
-    case{'sensorpatches','spatches'}
-        % val= L3Get(L3,'sensor patches')
+    case{'patches','spatches'}
+        % val= L3Get(L3,'patches')
         % Design sensor training patches.
         %
         % If saturation indices has not yet been determined, return all
@@ -209,13 +209,13 @@ switch(param)
             val = L3.data.patches;
         end
 
-    case{'sensorpatchesno0'}
-        % val= L3Get(L3,'sensor patches no 0')        
+    case{'patchesno0'}
+        % val= L3Get(L3,'patches no 0')        
         % Patches but with measurements for saturated channels not replaced
         % with 0.  Getting sensor patches (above) returns 0 for all pixels
         % that measure a saturated channel for the current saturated index.
         % Sometimes we don't want that such as get 
-        % 'sensor patch saturation'.
+        % 'patch saturation'.
         if isfield(L3.training,'saturationindices') & ...
                 ~isempty(L3.training.saturationindices)
             % Return only patches for current saturation case
@@ -227,7 +227,7 @@ switch(param)
     case {'nsensorpatches','nspatches'}
         % L3Get(L3,'n sensorpatches');
         % How many patches currently stored
-        % This has two modes - very similar to 'sensorpatches' above
+        % This has two modes - very similar to 'patches' above
         if isfield(L3.training,'saturationindices') & ...
                 ~isempty(L3.training.saturationindices);
             % Count only patches for current saturation case
@@ -236,12 +236,12 @@ switch(param)
             val = size(L3.data.patches,2);
         end        
         
-    case {'sensorpatchesnoisy','spatchesnoisy'}
-        % L3Get(L3,'sensor patches noisy')
+    case {'patchesnoisy','spatchesnoisy'}
+        % L3Get(L3,'patches noisy')
         %
         % We reset the random number generator to the initial configuration
         % here.  To think.
-        patches = L3Get(L3,'sensor patches');
+        patches = L3Get(L3,'patches');
         sensorD = L3Get(L3,'sensor design');
         
         % For now, we also reset the random number generator before getting
@@ -250,36 +250,36 @@ switch(param)
         rand('state',rInit); randn('state',rInit);   
         val = patches + L3noisegenerate(patches,sensorD);
 
-    case {'sensorpatchluminance','sensorpatchluminances'}
-        % val = L3Get(L3,'sensor patch luminance');
+    case {'patchluminance','patchluminances'}
+        % val = L3Get(L3,'patch luminance');
         lFilter = L3Get(L3,'luminance filter');
-        patches = L3Get(L3,'sensor patches');
+        patches = L3Get(L3,'patches');
         val = lFilter*patches;
         
-    case {'sensorpatchmeans'}
-        % val = L3Get(L3,'sensor patch means');
+    case {'patchmeans'}
+        % val = L3Get(L3,'patch means');
         % Mean in each color channel for each patch
         meansFilter = L3Get(L3,'means filter');
-        patches     = L3Get(L3,'sensor patches');
+        patches     = L3Get(L3,'patches');
         val = meansFilter*patches;
 
-    case {'sensorpatcheszeromean'}
-        % val = L3Get(L3,'sensor patch zero mean')
-        patches = L3Get(L3,'sensor patches');
-        means   = L3Get(L3,'sensor patch means');
+    case {'patcheszeromean'}
+        % val = L3Get(L3,'patch zero mean')
+        patches = L3Get(L3,'patches');
+        means   = L3Get(L3,'patch means');
         blockPattern = L3Get(L3,'block pattern');
         val = L3adjustpatchmean(patches,-means,blockPattern);
 
-    case {'sensorpatchcontrast','sensorpatchcontrasts'}
-        % val = L3Get(L3,'sensor patch contrasts');
-        val = L3Get(L3,'sensor patches zero mean');
+    case {'patchcontrast','patchcontrasts'}
+        % val = L3Get(L3,'patch contrasts');
+        val = L3Get(L3,'patches zero mean');
         val = mean(abs(val));
         
-    case {'sensorpatchcontrastnoisy','sensorpatchcontrastsnoisy'}
-        % val = L3Get(L3,'sensor patch contrasts noisy');
+    case {'patchcontrastnoisy','patchcontrastsnoisy'}
+        % val = L3Get(L3,'patch contrasts noisy');
         %
         meansFilter = L3Get(L3,'means filter');
-        spNoisy     = L3Get(L3,'sensor patches noisy');
+        spNoisy     = L3Get(L3,'patches noisy');
         means = meansFilter*spNoisy;
         blockPattern = L3Get(L3,'block pattern');
         val = L3adjustpatchmean(spNoisy,-means,blockPattern);
@@ -292,19 +292,19 @@ switch(param)
         %
         % For example original data is in interval [ao/ag, voltageswing]
         % but new range is [0, voltageswing-ao/ag]
-        sensorD = L3Get(L3,'sensordesign');
+        sensorD = L3Get(L3,'sensor design');
         pixel = sensorGet(sensorD,'pixel');
         voltageSwing = pixelGet(pixel,'voltage swing');  % pixel's actual voltage swing
         ao = sensorGet(sensorD,'analogOffset');
         ag = sensorGet(sensorD,'analogGain');
         val = voltageSwing - ao/ag;       % maximum voltage for L3 train & render
         
-    case {'sensorpatchsaturation','sensorpatchsaturationcase'}
+    case {'patchsaturation','patchsaturationcase'}
         % matrix giving the saturation case for each patch
         voltagemax = L3Get(L3,'voltage max');
         blockPattern = L3Get(L3,'block pattern');
         nfilters = L3Get(L3, 'n filters');        
-        patches = L3Get(L3,'sensor patches no 0'); % saturated colors are not 0ed
+        patches = L3Get(L3,'patches no 0'); % saturated colors are not 0ed
         saturated = (patches >= voltagemax-.001);
         val = zeros(nfilters,size(patches,2));
         for filternum = 1:nfilters
@@ -335,7 +335,7 @@ switch(param)
         % L3Get(L3,'ivector')
         % These are number of colors x number of samples
         % These are the ideal (correct) values for the center pixel.
-        % This has two modes - very similar to 'sensorpatches' above
+        % This has two modes - very similar to 'patches' above
         if isfield(L3.training,'saturationindices') & ...
                 ~isempty(L3.training.saturationindices);
             % Count only patches for current saturation case
@@ -452,7 +452,7 @@ switch(param)
         if ~isempty(varargin), rowcol = varargin{1};
         else rowcol = L3Get(L3,'patch type');
         end
-        blockWidth = L3Get(L3,'blockrowcol');
+        blockWidth = L3Get(L3,'block row col');
         cfaPattern = L3Get(L3,'cfa pattern');
         val = L3TrainBlockPattern(rowcol,blockWidth,cfaPattern);
     
@@ -496,7 +496,7 @@ switch(param)
         else       
             % Find flat indices and then save them
             flatThreshold = L3Get(L3,'flat threshold');
-            contrasts     = L3Get(L3,'sensor patch contrasts');
+            contrasts     = L3Get(L3,'patch contrasts');
             val = (flatThreshold >= contrasts);
             L3.training.flatindices = val;
         end
@@ -512,7 +512,7 @@ switch(param)
         % These are the patches that match the desired saturation case
         
         % The first time saturation indices is gotten it is calculated and
-        % stored (also stored for L3Get 'sensorpatchsaturation'. Subsequent
+        % stored (also stored for L3Get 'patchsaturation'. Subsequent
         % times it is loaded and not calculated. These indices are cleared
         % each time the patch type, luminance type, or saturation type
         % change.
@@ -522,7 +522,7 @@ switch(param)
             val = L3.training.saturationindices;
         else
             % Find saturation indices and then save them
-            saturationcases = L3Get(L3,'sensor patch saturation');
+            saturationcases = L3Get(L3,'patch saturation');
             saturationtype = L3Get(L3,'saturation type');
             desiredsaturationcase = L3Get(L3,'saturation list',saturationtype);            
             saturationindices = L3findsaturationindices(saturationcases, ...
@@ -714,7 +714,7 @@ switch(param)
         else       
             % Find transition indices and then save them
             flatThreshold = L3Get(L3,'flat threshold');
-            contrasts     = L3Get(L3,'sensor patch contrasts');
+            contrasts     = L3Get(L3,'patch contrasts');
             transitionContrastHigh = L3Get(L3, 'transition contrast high');
             transitionContrastLow = L3Get(L3, 'transition contrast low');
             val = (contrasts <= flatThreshold * transitionContrastHigh) & ...
@@ -724,7 +724,7 @@ switch(param)
         
     case {'transitionweightsflat'}
         flatThreshold = L3Get(L3,'flat threshold');
-        contrasts = L3Get(L3,'sensor patch contrasts');
+        contrasts = L3Get(L3,'patch contrasts');
         upper = flatThreshold * L3Get(L3, 'transition contrast high');
         lower = flatThreshold * L3Get(L3, 'transition contrast low');
         transitionindices = L3Get(L3,'transition indices');

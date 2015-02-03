@@ -38,7 +38,7 @@ function L3 = L3Train(L3)
 % to make sure we render with the offset removed.  
 %
 % This needs more comment/discussion.
-sensorM = L3Get(L3,'sensor monochrome');
+sensorM = L3Get(L3,'monochrome sensor');
 ao = sensorGet(sensorM,'analogOffset');
 ag = sensorGet(sensorM,'analogGain');
 for ii = 1 : length(inputIm)
@@ -89,7 +89,7 @@ for rr=1:size(cfaPattern,1)
             [sensorPatches, idealVec] = L3trainingPatches(L3, inputIm, desiredIm);
 
             % Store the answer.
-            L3 = L3Set(L3,'sensor patches',sensorPatches);
+            L3 = L3Set(L3,'patches',sensorPatches);
             L3 = L3Set(L3,'ideal vector',idealVec);
 
             for ll=1:length(lumList)
@@ -164,7 +164,7 @@ for rr=1:size(cfaPattern,1)
 
                     %% Split patches into flat and texture
                     %Determine which patches are flat or textured based on the contrast
-                    contrasts =  L3Get(L3,'sensor patch contrasts');
+                    contrasts =  L3Get(L3,'patch contrasts');
                     sortedcontrasts = sort(contrasts);
 
                     %If oversample~=0, the flatthreshold value found here was
@@ -209,7 +209,7 @@ for rr=1:size(cfaPattern,1)
                     % they need to be increased to work when there is noise.  So we run the
                     % noise case to determine the threshold.
                     if oversample == 0
-                        contrastsNoise = L3Get(L3,'sensor patch contrast noisy');
+                        contrastsNoise = L3Get(L3,'patch contrast noisy');
                         contrastsNoise = sort(contrastsNoise);
 
                         %Adjust contrast thresholds

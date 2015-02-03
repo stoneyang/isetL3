@@ -33,7 +33,7 @@ L3 = L3ClearIndicesData(L3);  % delete any old flat and saturation indices
 desiredluminance = L3Get(L3,'desiredpatchluminance');
 npixelsperpatch = L3Get(L3,'n pixels per patch');
 nidealfilters = L3Get(L3,'n ideal filters');
-patches = L3Get(L3,'sensor patches no 0');
+patches = L3Get(L3,'patches no 0');
 idealVec = L3Get(L3,'ideal vector');
 lt = L3Get(L3, 'luminance type');
 lumList = L3Get(L3, 'luminance list');
@@ -64,7 +64,7 @@ end
 desiredluminancevector = rand(1, size(patches, 2)) * (maxLum - minLum) + minLum;
 
 %% Perform scaling
-luminance = L3Get(L3, 'sensor patch luminance');
+luminance = L3Get(L3, 'patch luminance');
 
 %Following is amount we need to scale the illuminant to get desired 
 %luminance.
@@ -75,6 +75,6 @@ idealVec = repmat(scale,nidealfilters,1) .* idealVec;
 
 
 %% Store scaled patches and ideal vector
-L3 = L3Set(L3,'sensor patches',patches);
+L3 = L3Set(L3,'patches',patches);
 L3 = L3Set(L3,'ideal vector',idealVec);
 

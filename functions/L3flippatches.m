@@ -8,7 +8,7 @@ function L3 = L3flippatches(L3)
 
 if ieNotDefined('L3'), error('L3 required'); end
 
-patches        = L3Get(L3,'sensor patches no 0');
+patches        = L3Get(L3,'patches no 0');
 textureindices = L3Get(L3,'texture indices');
 flip      = L3Get(L3,'flip');
 blocksize = L3Get(L3,'block size');
@@ -83,7 +83,7 @@ if flip.t
         patches([lindexes,uindexes], needflip);
 end
 
-L3 = L3Set(L3,'sensor patches saturation case',patches);
+L3 = L3Set(L3,'patches saturation case',patches);
 
 end
 
