@@ -76,8 +76,12 @@ end
 % The code is below and in the file.  But here we just do the training and
 % then visualize the resulting L3 transforms.
 L3 = L3Train(L3);
+fname = ieTempfile('mat');
+save(fname,'L3');
 
 %% Visualize the filters and the clusters in various ways
+
+
 
 %%  The rest of L3Train ... to be simplified here
 
