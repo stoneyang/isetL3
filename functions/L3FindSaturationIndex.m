@@ -15,8 +15,8 @@ function saturationindex = L3FindSaturationIndex(L3)
 
 %% Load Data
 saturationlist = L3Get(L3,'saturation list');
-saturationcases = L3Get(L3,'sensor patch saturation');
-nsensorpatches = L3Get(L3,'n sensor patches');
+saturationcases = L3Get(L3,'patch saturation');
+nsensorpatches = L3Get(L3,'n patches');
 
 %% Deal with all patches that have a trained saturation case
 saturationindex = zeros(1, nsensorpatches);
@@ -33,7 +33,7 @@ end
 unfinished = (saturationindex==0);  % which patches do not have a match
 
 if any(unfinished)    
-    means = L3Get(L3,'sensor patch means');
+    means = L3Get(L3,'patch means');
 end
 while any(unfinished)
     % for each unfinished patch, pretend the saturated channel with the

@@ -18,12 +18,12 @@ if ieNotDefined('lumType'), lumType = L3Get(L3,'lum type'); end
 
 %%
 % Check if a figure is needed
-f = vcNewGraphWin;
+f = vcNewGraphWin; uData = [];
 set(f,'name',sprintf('%s filters',plotType));
 
 nColors = L3Get(L3,'n ideal filters');
 sz      = L3Get(L3,'blocksize'); r = sz(1); c = sz(2);
- 
+
 plotType = ieParamFormat(plotType);
 
 %%
@@ -44,7 +44,9 @@ switch plotType
             if ieNotDefined('textureType'), error('Texture tree depth required'); end
             filters = L3Get(L3,plotType,patchType,lumType, satType, textureType);
         else            
+            % Check for the global filter.   Sometimes the slot is unfilled
             filters = L3Get(L3,plotType,patchType,lumType,satType);
+            if isempty(filters), close(f); return; end
         end
         
         for ii=1:nColors

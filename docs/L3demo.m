@@ -116,7 +116,7 @@ camera = cameraSet(camera,'sensor fov',fovScene);
       
       indices=ceil(rand(1,25)*size(inputPatches,2)/2); %randomly pick 25
       
-      L3 = L3Set(L3,'sensor patches', inputPatches);
+      L3 = L3Set(L3,'patches', inputPatches);
       L3plotpatches(L3,indices,5,5);
       title('Some of the Input Patches of Type 1,1')
 
@@ -138,7 +138,7 @@ camera = cameraSet(camera,'sensor fov',fovScene);
         luminancefilter = L3Get(L3,'luminance filter');
         L3plot(L3,'luminance filter');   title('Luminance Filter')
         
-        allPatches = L3Get(L3,'sensor patches');
+        allPatches = L3Get(L3,'patches');
         patchluminances = luminancefilter*allPatches;
         
         figure;     hist(patchluminances,50)
@@ -168,7 +168,7 @@ camera = cameraSet(camera,'sensor fov',fovScene);
         
         %Set current patch luminance index
         L3 = L3Set(L3,'luminance type',ll);
-        L3 = L3Set(L3,'sensor patches', allPatches(:,currentpatches));        
+        L3 = L3Set(L3,'patches', allPatches(:,currentpatches));        
         
 %% Global Linear Pipeline  (simpler alternative to full L^3 pipeline)
 % The simplest way to run the pipeline is to have a single filter for each
@@ -183,7 +183,7 @@ camera = cameraSet(camera,'sensor fov',fovScene);
         %Output for global linear pipeline is calculated using a single
         %multiplication.
         globalpipelinefilter = L3Get(L3,'global filter');
-        xhatL3(:,currentpatches) = globalpipelinefilter* L3Get(L3,'sensor patches');
+        xhatL3(:,currentpatches) = globalpipelinefilter* L3Get(L3,'patches');
 
 %% Divide patches into flat and texture
 % Patches are divided into two groups, flat and texture.
@@ -200,7 +200,7 @@ camera = cameraSet(camera,'sensor fov',fovScene);
 %%      1.  Calculate the mean in each color channel
             % means = L3Get(L3,'sensor patch means');
             meansFilter = L3Get(L3,'means filter');
-            patches     = L3Get(L3,'sensor patches');
+            patches     = L3Get(L3,'patches');
             means = meansFilter*patches;
 
             L3plot(L3,'mean filter');
@@ -225,7 +225,7 @@ camera = cameraSet(camera,'sensor fov',fovScene);
 % Optimal filters learned for the flat patches are applied to get the
 % output XYZ estimates.
         flatfilters = L3Get(L3,'flat filters');
-        patches = L3Get(L3,'sensor patches');
+        patches = L3Get(L3,'patches');
         xhatL3(:,currentpatches(flatindices)) = flatfilters * patches(:,flatindices);        
                                 
         L3plot(L3,'flat filter');

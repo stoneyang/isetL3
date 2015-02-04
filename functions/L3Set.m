@@ -7,21 +7,23 @@ function L3 = L3Set(L3,param,val,varargin)
 % and lower case and include spaces.  Thus, these calls are equivalent
 %
 %   L3Set(L3,'rendering illuminant',val)
-%   L3Set(L3,'renderingIlluminant',val)
+%   L3Set(L3,'RenderingIlluminant',val)
 %
-% It is possible to set the parameters of some of the key objects directly
-% through this call.  For the sensor and oi, for example, you can use this
-% syntax.
+% It is possible to set the parameters of the oi and sensor objects
+% directly through this call.  You can use this syntax.
 %
 %   L3Set(L3,'sensor pixel',pixel)
 %   L3Set(L3,'oi optics fnumber',5.6)
 %   L3Set(L3,'sensor exptime',0.05);  % This is the design.sensor
 %
-% Parameter list
-%     name -  L3's name
+% Complain if you want to be able to set the scene this way, too (BW).
+%
+% L3 Set parameter list
+%
+%     name -  The name for this instance
 %     type -  Always 'L3'
 %     patch type - 
-%     scenes    -  Cell array of scenes
+%     scenes     -  Cell array of scenes
 %     training illuminant- ;  %Illuminant from first scene used for training
 %         This is stored with the camera so incoming scenes can be set to
 %         the correct illuminant.
@@ -54,10 +56,10 @@ function L3 = L3Set(L3,param,val,varargin)
 %
 %         Filters.  Format needs to be described.
 %     filters       -   % Whole structure
-%     globalfilter  - 
-%     flatfilter    - 
-%     texturefilter - 
-%     emptyfilter   - 
+%     global filter  - 
+%     flat filter    - 
+%     texture filter - 
+%     empty filter   - 
 %         val is ignored
 %         Fill in empty matrix in filter structure at current patch type,
 %         luminance, and saturation.  This is used if there are not enough
@@ -66,9 +68,9 @@ function L3 = L3Set(L3,param,val,varargin)
 %         Other Patch training parameters
 %     training    - 
 %         The whole structure.
-%     noversample - 
+%     n oversample - 
 %         Controls over sampling.  Describe here
-%     saturationflag - 
+%     saturation flag - 
 %         Use saturation or not ... probably shouldn't be a flag.
 %     n training patches - 
 %     max training patches - 
@@ -94,7 +96,7 @@ function L3 = L3Set(L3,param,val,varargin)
 %         At end of training, list should contain all saturation cases that
 %         occur in training data.
 %
-%      saturationtype - 
+%      saturation type - 
 %         Integer giving the index into saturationlist for the current
 %         saturation case.
 %      block size - 
@@ -109,7 +111,7 @@ function L3 = L3Set(L3,param,val,varargin)
 %      saturation indices - 
 %      luminance index - 
 %      saturation index - 
-%      clusterindex - 
+%      cluster index - 
 %      xyz result - 
 %      weight color transform - 
 %      global weight bias variance - 
@@ -216,7 +218,7 @@ switch param
         L3.rendering.illuminant = val;
     case{'oi','opticalimage'};       % For lens information?  Maybe just optics?
         L3.oi = val;
-    case{'sensordesign','designsensor'};   
+    case{'designsensor'};   
         % ISET Sensor structure.  Adjust using sensorSet.
         L3.sensor.design = val;
         

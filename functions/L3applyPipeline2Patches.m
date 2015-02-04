@@ -25,7 +25,7 @@ function [xhatL3, luminanceindex, saturationindex, clustermembers] = ...
 
 
 %% Find saturation cases
-L3 = L3Set(L3,'patches sensor', allpatches);
+L3 = L3Set(L3,'patches', allpatches);
 saturationindex = L3FindSaturationIndex(L3);
 neededsaturations = unique(saturationindex(:));
 
@@ -59,7 +59,7 @@ for st = neededsaturations'
         % Only put current patches into L3 structure.  Then we need to
         % update saturation indices in L3 structure because all patches in
         % the structure match the current saturation case.
-        L3 = L3Set(L3,'sensor patches', allpatches(:,currentpatches));
+        L3 = L3Set(L3,'patches', allpatches(:,currentpatches));
         L3 = L3Set(L3,'saturation indices', true(1,length(currentpatches)));
 
         %Set current patch luminance index
@@ -90,7 +90,7 @@ for st = neededsaturations'
                 
                 %Flip texure patches into canonical form
                 L3 = L3flippatches(L3);
-                patches = L3Get(L3, 'sensor patches');
+                patches = L3Get(L3, 'patches');
                 
                 %Perform texture clustering
                 L3 = L3clustertexturepatches(L3);  

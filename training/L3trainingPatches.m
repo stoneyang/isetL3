@@ -83,8 +83,8 @@ tMatrix = cell2mat(reshape(tMatrix,1,numel(cfaPattern)));
 %% Subsample if there are more training patches than the max
 numpatches = size(pMatrix,2);
 maxpatches = L3Get(L3,'max training patches');
-if ~isempty(maxpatches) & numpatches>maxpatches
-    keep = randsample(numpatches, maxpatches);
+if ~isempty(maxpatches) && (numpatches>maxpatches)
+    keep = randperm(numpatches, maxpatches);  % randsample in more modern Matlab
     pMatrix = pMatrix(:,keep);
     tMatrix = tMatrix(:,keep);
 end

@@ -23,13 +23,13 @@ function filters = L3findfilters(L3,noiseFlag,patchindices,symmetryflag)
 %% Check inputs
 if ieNotDefined('L3'), error('Require L3'); end
 if ieNotDefined('noiseFlag'), error('Noise flag required.'); end
-if  nargin<3 | isempty(patchindices)
+if  nargin<3 || isempty(patchindices)
     % By default, use all patches
-    npatches = L3Get(L3,'n sensor patches');
+    npatches = L3Get(L3,'n patches');
     patchindices = true(1, npatches);
 end
 
-if nargin<4 | isempty(symmetryflag)
+if nargin<4 || isempty(symmetryflag)
     % By default, don't enforce symmetry
     symmetryflag = 0;
 else
@@ -52,7 +52,7 @@ weightbiasvariance = L3Get(L3, 'weight bias variance');
 
 %% Find Noise Variance
 if noiseFlag == 0
-    patches  = L3Get(L3,'sensor patches noisy');
+    patches  = L3Get(L3,'patches noisy');
     noisevar = 0;
 else  % noiseFlag~=0
     % There is noise.  Find it.
@@ -69,7 +69,7 @@ end
 patches(ignorepixels,:) = [];
 
 %% Find Wiener filter
-if length(weightbiasvariance)>1 & any(abs(diff(weightbiasvariance))~=0)
+if length(weightbiasvariance)>1 && any(abs(diff(weightbiasvariance))~=0)
     % If channels are weighted differently, do color transform
    centeroutput = weightColorTransform * centeroutput; 
 

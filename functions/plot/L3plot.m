@@ -144,7 +144,7 @@ switch plotType
         sensor   = sensorSet(sensor,'pattern',bPattern);
         
         % Tell this guy whether a figure is of interest.
-%         [uData, g] = plotSensor(sensor,'cfa full');
+        % [uData, g] = plotSensor(sensor,'cfa full');
         
         % Could implement this other way of showing the colors.
         % Should decide what we want in ISET, really.

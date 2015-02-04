@@ -25,7 +25,7 @@ if ieNotDefined('row'), row = 10; col = 10;  end
 if ieNotDefined('borderW'), borderW = 1; end
 
 % Number of patch rows and cols
-patches = L3Get(L3,'sensor patches');
+patches = L3Get(L3,'patches');
 patches = patches(:,indices);
 
 blocksize = L3Get(L3,'blocksize');

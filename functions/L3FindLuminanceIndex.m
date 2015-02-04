@@ -25,7 +25,7 @@ patchLuminanceSamples = luminancelist(luminanceSampleIndices);
 % the those for a particular patch luminance.  Here we figure out for each
 % training patch which of the training luminance values is closest. here.
 
-patchluminances = L3Get(L3, 'sensor patch luminance');
+patchluminances = L3Get(L3, 'patch luminance');
 differences = repmat(patchluminances',1,length(patchLuminanceSamples)) - ...
     repmat(patchLuminanceSamples,length(patchluminances),1);
 [~,luminanceindex] = min(abs(differences'),[],1);

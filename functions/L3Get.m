@@ -429,7 +429,7 @@ switch(param)
         % 
         % This change is easiest to adapt to multiple saturation cases, but
         % it might be a little risky.
-        if isfield(L3.training,'saturationindices') & ...
+        if isfield(L3.training,'saturationindices') && ...
                 ~isempty(L3.training.saturationindices);
             % Return only patches for current saturation case
             val = L3.data.patches(:, L3.training.saturationindices);
@@ -460,11 +460,11 @@ switch(param)
             val = L3.data.patches;            
         end
         
-    case {'nsensorpatches','nspatches'}
+    case {'npatches','nsensorpatches'}% ,'nspatches'}
         % L3Get(L3,'n sensorpatches');
         % How many patches currently stored
         % This has two modes - very similar to 'patches' above
-        if isfield(L3.training,'saturationindices') & ...
+        if isfield(L3.training,'saturationindices') && ...
                 ~isempty(L3.training.saturationindices);
             % Count only patches for current saturation case
             val = sum(L3.training.saturationindices);
@@ -598,7 +598,13 @@ switch(param)
         if ~isempty(varargin), pt = varargin{1}; end
         if length(varargin) > 1, lt = varargin{2}; end
         if length(varargin) > 2, st = varargin{3}; end
-        val = L3.filters{pt(1),pt(2),lt,st}.global;
+        tmp = L3.filters{pt(1),pt(2),lt,st};
+        if isfield(tmp,'global')
+            val = L3.filters{pt(1),pt(2),lt,st}.global; 
+        else
+            fprintf('No global filter pt [%i,%i], lum %i, sat %i)\n',pt(1),pt(2),lt,st);
+        end
+        
     case{'luminancefilter','lfilter'};
         % lFilter = L3Get(L3,'luminance filter',patchType,satType)
         % luminancefilter is a vector that is used to calculate the patch

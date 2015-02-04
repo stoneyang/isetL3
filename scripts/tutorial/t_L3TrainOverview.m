@@ -83,8 +83,9 @@ save(fname,'L3');
 % /private/tmp/ie_tp8e52bbf4_644c_49c4_809d_075a10c8d3c7.mat
 load(fname)
 camera = L3CameraCreate(L3);
-s = L3Get(L3,'scenes',1)
-camera = cameraCompute(camera,s);
+camera = cameraCompute(camera,L3Get(L3,'scenes',1));
+
+% r = cameraGet(camera,'ip result'); vcNewGraphWin; imagescRGB(r);
 
 %% Visualize the filters and the clusters in various ways
 %
@@ -100,25 +101,69 @@ camera = cameraCompute(camera,s);
 % RAW sensor image
 inputIm = cameraGet(camera,'sensor volts');
 
-vcNewGraphWin; imagesc(inputIm/max(inputIm(:))); colormap(gray)
+vcNewGraphWin; 
+imagesc(inputIm/max(inputIm(:))); colormap(gray); axis image
 sz      = sensorGet(sensor,'size');
 title('RAW sensor image')
 
-% RGBW CFA
+%% RGBW CFA
 L3plot(L3,'cfa full');       title('RGBW CFA')
 
 % Spectral sensitivities
 wave = sensorGet(sensor,'wave');
 sensitivities = sensorGet(sensor,'spectral QE');
-figure;   hold on
+vcNewGraphWin;   hold on
 plotcolors='rgbk';
 for colornum=1:4
     plot(wave,sensitivities(:,colornum),plotcolors(colornum))
 end
 xlabel('Wavelength (nm)');  title('Spectral Sensitivities')
 
+%% Show Patch Types
+% L^3 is a patch based algorithm.  The output at each pixel is a
+% function only of a set of nearby pixels in the input RAW image.
+%
+% Here a patch is a 5x5 square of pixels centered at the pixel where
+% we want to calculate the output.  Since the CFA is a 2x2 pattern,
+% there are 4 types of pixels (RGB and W), which could be at the
+% center of a patch.  Therefore, we have the following four types of
+% patches.
+%
+% Different filters have been trained for each patch type.  We will
+% build the output image by iterating through each patch type and
+% using the appropriate filters.
 
+warning('off')    %needed because of CFA/data mismatch
+for patchtyperow=1:2
+    for patchtypecol=1:2
+        L3plot(L3,'block pattern',[patchtyperow,patchtypecol]);
+        title(['Patch Type ',num2str(patchtyperow),', '...
+            ,num2str(patchtypecol)])
+    end
+end
+warning('on')
+      
+%%  Illustrate 
+rr=1; cc=2;
+L3 = L3Set(L3,'patch type',[rr,cc]);
 
+% Load all patches of this cfa position from RAW image
+inputPatches = L3sensor2Patches(L3,inputIm);
+
+% Patches are stored as a matrix where each row is a vectorized
+% patch.
+
+% Size of this matrix: number of pixels in a patch x number of
+% R pixels in the RAW image.  (The border of the image is ignored
+% when a patch cannot fit so this number is slightly off.)
+fprintf('Number of patches: %i\n',size(inputPatches,2));
+
+npatches = 36;  % Power of 2
+indices=ceil(rand(1,npatches)*size(inputPatches,2)/2); %Randomly pick 25 patches
+
+L3 = L3Set(L3,'patches', inputPatches);
+L3plotpatches(L3,indices,sqrt(npatches),sqrt(npatches));
+title(sprintf('Some of the Input Patches of Type %i %i',rr,cc))
 
 %%  The rest of L3Train ... to be simplified here
 
