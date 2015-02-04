@@ -40,10 +40,9 @@ camera = cameraSet(camera,'sensor fov',fovScene);
 %%  Move deeper in the code to more L^3 specific functions
 %
 
-% Following is in vcimageCompute, which is called using the following line:
-% vci    = vcimageCompute(vci,sensor);  
-
-    L3 = imageGet(vci,'L3');
+% Following is in ipCompute, which is called using the following line:
+% vci    = ipCompute(vci,sensor);  
+    L3 = cameraGet(camera,'ip L3');
 
 %   Following is in L3render, which is called using the following line:
     % [L3xyz, lumIdx, satIdx, clusterIdx] = L3render(L3,sensor,mode); 
@@ -363,7 +362,7 @@ camera  = cameraSet(camera,'vci name','L3');
 
 %% Show which of the trained patch luminance samples used at each pixel
 vci = cameraGet(camera,'vci');
-L3 = imageGet(vci,'L3');
+L3 = ipGet(vci,'L3');
 
 lumIdx = L3Get(L3,'luminance index');
 figure;  imagesc(lumIdx); axis image; axis off;
@@ -372,7 +371,7 @@ title('Luminance Value Used')
 
 %% Show which of the saturation cases used at each pixel
 vci = cameraGet(camera,'vci');
-L3 = imageGet(vci,'L3');
+L3 = ipGet(vci,'L3');
 
 satIdx = L3Get(L3,'saturation index');
 figure;  imagesc(satIdx); axis image; axis off;
@@ -381,7 +380,7 @@ title('Saturation Case Used')
 
 %% Show flat/texture classification results
 vci = cameraGet(camera,'vci');
-L3 = imageGet(vci,'L3');
+L3 = ipGet(vci,'L3');
 
 clusterIdx = L3Get(L3,'cluster index');
 figure;  imagesc(clusterIdx); axis image; axis off;

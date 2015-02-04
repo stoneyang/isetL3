@@ -1,8 +1,9 @@
 function camera = L3CameraCreate(L3)
-
 % Create a camera object from an L3 structure
 %
 % camera = L3CameraCreate(L3)
+%
+% Copyright Vistasoft Team, 2012
 
 camera.name   = 'L3';
 camera.type   = 'camera';
@@ -11,6 +12,8 @@ camera.sensor = L3Get(L3,'design sensor');
 
 L3small = L3ClearData(L3);
 
-vci = vcimageCreate('L3');
-vci = imageSet(vci,'L3',L3small);
+vci = ipCreate('L3');
+vci = ipSet(vci,'L3',L3small);
 camera.vci = vci;
+
+end

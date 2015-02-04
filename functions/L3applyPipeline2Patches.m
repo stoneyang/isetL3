@@ -25,7 +25,7 @@ function [xhatL3, luminanceindex, saturationindex, clustermembers] = ...
 
 
 %% Find saturation cases
-L3 = L3Set(L3,'sensor patches', allpatches);
+L3 = L3Set(L3,'patches sensor', allpatches);
 saturationindex = L3FindSaturationIndex(L3);
 neededsaturations = unique(saturationindex(:));
 
@@ -37,7 +37,7 @@ xhatL3flat = zeros(nideal, numpatches);
 xhatL3texture = zeros(nideal, numpatches);
 clustermembers = zeros(1, numpatches);
 for st = neededsaturations'    
-    L3 = L3Set(L3,'sensor patches', allpatches);
+    L3 = L3Set(L3,'patches', allpatches);
     L3 = L3Set(L3,'Saturation Type',st);
     
     saturationindices = (saturationindex == st);

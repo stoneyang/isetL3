@@ -79,7 +79,44 @@ L3 = L3Train(L3);
 fname = ieTempfile('mat');
 save(fname,'L3');
 
+%% Assuming L3 has been saved
+% /private/tmp/ie_tp8e52bbf4_644c_49c4_809d_075a10c8d3c7.mat
+load(fname)
+camera = L3CameraCreate(L3);
+s = L3Get(L3,'scenes',1)
+camera = cameraCompute(camera,s);
+
 %% Visualize the filters and the clusters in various ways
+%
+% See L3RenderDemo for examples to use here.
+
+%% Show CFA and RAW image
+% The CFA pattern is visible in the RAW image.  Here the RAW image is
+% drawn as a monochrome image although the measurement at each pixel
+% has an associated color.
+%
+% The 2x2 RGBW CFA is used in this example.
+
+% RAW sensor image
+inputIm = cameraGet(camera,'sensor volts');
+
+vcNewGraphWin; imagesc(inputIm/max(inputIm(:))); colormap(gray)
+sz      = sensorGet(sensor,'size');
+title('RAW sensor image')
+
+% RGBW CFA
+L3plot(L3,'cfa full');       title('RGBW CFA')
+
+% Spectral sensitivities
+wave = sensorGet(sensor,'wave');
+sensitivities = sensorGet(sensor,'spectral QE');
+figure;   hold on
+plotcolors='rgbk';
+for colornum=1:4
+    plot(wave,sensitivities(:,colornum),plotcolors(colornum))
+end
+xlabel('Wavelength (nm)');  title('Spectral Sensitivities')
+
 
 
 
