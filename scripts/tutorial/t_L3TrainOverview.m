@@ -76,6 +76,9 @@ end
 % The code is below and in the file.  But here we just do the training and
 % then visualize the resulting L3 transforms.
 L3 = L3Train(L3);
+
+% Temp, or maybe we need to make a library of L3 things?  L3_<FileName>?
+% Store these in L3exp?
 fname = ieTempfile('mat');
 save(fname,'L3');
 

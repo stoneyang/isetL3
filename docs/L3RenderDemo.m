@@ -18,7 +18,7 @@ clearvars ** -except camera  %clear workspace except for camera
 
 %% Load scene to capture with camera
 scene = sceneFromFile('StuffedAnimals_tungsten-hdrs','multispectral');
-meanLuminance = 15;     % cd/m^2
+meanLuminance = 100;     % cd/m^2
 fovScene      = 10;     % degrees in horizontal field of view
 scene = sceneSet(scene,'hfov',fovScene);
 scene = sceneAdjustLuminance(scene,meanLuminance);
@@ -26,6 +26,7 @@ scene = sceneAdjustLuminance(scene,meanLuminance);
 % Adjust FOV of camera to match scene
 camera = cameraSet(camera,'sensor fov',fovScene);
 
+camera = cameraSet(camera,'sensor exptime',0.05);
 %% Perform optics and sensor simulation
 %
 
