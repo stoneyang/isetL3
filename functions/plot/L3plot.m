@@ -3,11 +3,25 @@ function [uData, g] = L3plot(L3,plotType,varargin)
 %
 %  [uData, g] = L3plot(L3,plotType,varargin)
 %
+% Plot types:
+%   Filters
+%    {'mean filter'}   - Calculate mean of of each pixel type at position (r,c)
+%    {'global filter'}
+%    {'flat filter'}
+%    {'texture filter'}
+%    {'luminance filter'}
+%
+%   Sensor related plots
+%    {'block pattern'}     - A block centered at (row,col) of the cfa
+%    {'cfa full'}          - The entire CFA
+%    {'color filters'}       - Spectral QE
+%
 % Example:
 %   sensor = L3Get(L3,'design sensor'); plotSensor(sensor,'cfa block');
 %   sensor = L3Get(L3,'design sensor'); plotSensor(sensor,'cfa full');
 %
 %   uData = L3plot(L3,'block pattern',[1,1]);
+%   uData = L3plot(L3,'cfa full');
 %
 %   uData = L3plot(L3,'mean filter');  % Use current patch type
 %   uData = L3plot(L3,'mean filter',[2,1]);
@@ -23,16 +37,18 @@ function [uData, g] = L3plot(L3,plotType,varargin)
 % (c) Stanford VISTA Team, 2012
 
 
-%% Programming TODO:
-% Ideas.
+%% Programming TODO
+%
+% Plot the texture and luminance and saturation images by calls here.  The
+% example code is in L3RenderDemo.
 %
 % Classify pixels by type (texture, flat, and luminance, so forth)
 %  L3plot(L3,'luminance levels')
 %  L3plot(L3,'texture class')
 %
-%  L3plot(L3,'show the training data')
+%  L3plot(L3,'training scenes')
 %
-%  L3plot(L3,'illustrate patches')
+%  L3plot(L3,'data patches', classVector)
 %
 % Scripts for metrics.
 
@@ -156,7 +172,13 @@ switch plotType
         sensor   = L3Get(L3,'design sensor');
         
         % Tell this guy whether a figure is of interest.
-        [uData, g] = plotSensor(sensor,'cfa block');
+        [uData, g] = plotSensor(sensor,'cfa full');
+        
+    case {'colorfilters'}
+        sensor   = L3Get(L3,'design sensor');
+        
+        % Tell this guy whether a figure is of interest.
+        [uData, g] = plotSensor(sensor,'color filters');
         
     otherwise
         error('Unknown plot type: %s\n',plotType);
