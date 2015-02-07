@@ -49,8 +49,10 @@ for ii=1:nScenes
         oi = oiCompute(oi,thisScene);
     end
 
-    sensorM = sensorSet(sensorM,'NoiseFlag',-1);  % Turn off noise, analog-gain/offset, clipping, quantization    
-    cFilters = L3Get(L3,'ideal filter transmissivities');
+    % Turn off noise, analog-gain/offset, clipping, quantization    
+    sensorM = sensorSet(sensorM,'NoiseFlag',-1);
+    wave = sensorGet(sensorM,'wave');
+    cFilters = L3Get(L3,'ideal filter transmissivities',wave);
     desiredIm{ii} = monoCompute(sensorM,oi,cFilters);
 end
 

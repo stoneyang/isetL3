@@ -372,8 +372,9 @@ switch(param)
         % Not sure what else. 
         val = L3.oi;
     case {'monochromesensor'}
-        % ISET monochrome sensor structure. We only store the sensorD and
-        % make a monochrome version of it.
+        % Make a monochrome version of the design sensor.
+        % It is the same in all ways except it has the Monochrome spectral
+        % sensitivity.
         val = sensorMonochrome(L3.sensor.design, 'Monochrome');
     case {'idealfilters','idealsensorfilters'}
         % These are the filters used for the ideal sensor to create the
@@ -394,11 +395,22 @@ switch(param)
         tmp = L3Get(L3,'ideal filters');
         val = tmp.wave;
     case {'idealfiltertransmissivities'}
-        tmp = L3Get(L3,'ideal filters');
-        val = tmp.transmissivities;
+        % L3Get(L3,'ideal filter transmissivities',wave)
+        % There is a problem because the design sensor and the ideal filter
+        % values may not have the same wavelength sample.  This is bad, I
+        % think.  How did it get this way? - Try to fix.
+        idealWave = L3.sensor.idealFilters.wave;
+        val       = L3.sensor.idealFilters.transmissivities;
+        if ~isempty(varargin)
+            % Interpolation requested.
+            wave = varargin{1};
+            if isequal(idealWave(:),wave(:)), return;  % Interpolation not needed.
+            else  val = interp1(idealWave,val,wave);   % Interpolate
+            end
+        end
+        
     case {'idealfilternames'}
-        tmp = L3Get(L3,'ideal filters');
-        val = tmp.filterNames;
+        val = L3.sensor.idealFilters.filterNames;
         
     case{'designsensor'}
         % This is the sensor we are trying to design. It can have an
@@ -630,7 +642,7 @@ switch(param)
         % filter, X, when finding the luminance.  This can cause problems.
         % We can ignore the X pixels by checking if the filter has any
         % positive values.  (Similar to L3Get(L3,'X pixels'))
-%         measuredColors   = L3Get(L3,'filter vals');
+        %         measuredColors   = L3Get(L3,'filter vals');
         transmissivities = L3Get(L3,'design filter transmissivities');
         measuredColors = find(sum(transmissivities)>0 & ~saturationcase');
         
@@ -978,20 +990,27 @@ switch(param)
 end
 
 
-%% Not sure why this is here ... explain further.  
+%%
 function sensor = sensorMonochrome(sensor,filterFile)
 %
-%   Create a default monochrome image sensor array structure. This
-%   functions is a nested function extracted from sensorCreate.m. See
-%   snesorCreate.m
+%   Create a monochrome sensor that matches the other properties of sensor.
+%   This is used to calculate a set sensor values, without
+%   demosaicking.
 %
+%   This seems to have been extracted from sensorCreate.m. See
+%   sensorCreate.m.  Maybe we need to make it a separate function, and
+%   debug it better?
+
+% Name it
 sensor = sensorSet(sensor,'name',sprintf('monochrome-%.0f', vcCountObjects('sensor')));
 
+% Read the color filter and set it
 [filterSpectra,filterNames] = sensorReadColorFilters(sensor,filterFile);
 sensor = sensorSet(sensor,'filterSpectra',filterSpectra);
 sensor = sensorSet(sensor,'filterNames',filterNames);
 
-sensor = sensorSet(sensor,'cfaPattern',1);      % 'bayer','monochromatic','triangle'
+% Only one type of sensor in pattern
+sensor = sensorSet(sensor,'cfaPattern',1);      
 
 end
 

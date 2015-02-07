@@ -18,7 +18,6 @@ L3 = L3Initialize(L3);  % use default parameters
 blockSize = 5;               % Size of the solution patch used by L3
 L3 = L3Set(L3,'block size', blockSize);
 
-
 %%  The analysis here is an expansion of L3Train.m
 
 % The scenes used for training are set by default in L3

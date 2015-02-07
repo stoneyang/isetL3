@@ -63,8 +63,11 @@ sensorD  = L3Get(L3,'design sensor');
 sensorD  = sensorSet(sensorD,'size',sz);
 L3 = L3Set(L3,'design sensor',sensorD);
 
+showBar = ieSessionGet('wait bar');
+if showBar, h = waitbar(0,'L3 processing'); end
 % Build the image one cfa pattern position at a time
 for rr = 1:cfaSize(1)
+    if showBar, waitbar(rr/cfaSize(1),h); end
     for cc = 1:cfaSize(2)
         
         % Create  target patches for this cfa position
@@ -84,6 +87,7 @@ for rr = 1:cfaSize(1)
         resultL3ClusterIdx(yPos,xPos) = reshape(clustermembers,length(yPos),length(xPos));        
     end
 end
+if showBar, close(h); end
 
 return
 

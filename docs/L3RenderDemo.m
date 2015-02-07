@@ -11,7 +11,10 @@
 % m files the code was taken from.
 
 %% Train an L^3 camera
-s_L3TrainCamera
+% s_L3TrainCamera
+
+% Should be able to do this
+tmp = load('L3defaultcamera'); camera = tmp.camera;
 
 %%
 clearvars ** -except camera  %clear workspace except for camera
@@ -336,11 +339,13 @@ camera = cameraSet(camera,'sensor exptime',0.05);
 [camera,xyzIdeal] = cameraCompute(camera,scene,'idealxyz');
 xyzIdeal = xyzIdeal/max(xyzIdeal(:));   %scale to full display range
 
-vcNewGraphWin;  image(xyzIdeal); axis image; axis off;
-title('Ideal XYZ')
+% vcNewGraphWin;  image(xyzIdeal); axis image; axis off;
+% title('Ideal XYZ')
 
 %Convert XYZ to lRGB and sRGB
 [srgbIdeal, lrgbIdeal] = xyz2srgb(xyzIdeal);
+vcNewGraphWin;  image(srgbIdeal)
+title('Ideal XYZ as sRGB')
 
 %% Calculate final output images
 % Once the above calculations are performed for each patch using the
