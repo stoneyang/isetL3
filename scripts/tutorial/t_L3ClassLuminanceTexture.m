@@ -4,14 +4,16 @@
 % has an image and an L3 training structure.
 %
 
-% Texture image
+
+%% Get a camera with an L3 trained structure
+%% Texture image
 L3 = cameraGet(camera,'vci L3');
 clusterIdx = L3Get(L3,'cluster index');
 vcNewGraphWin;  imagesc(clusterIdx); axis image; axis off;
 colorbar
 title('Flat/ Texture Classification Results')
 
-% Luminance image
+%% Luminance image
 L3 = cameraGet(camera,'vci L3');
 lumIdx = L3Get(L3,'luminance index');
 vcNewGraphWin;  imagesc(lumIdx); axis image; axis off;
