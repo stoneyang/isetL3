@@ -70,6 +70,7 @@ L3.clusters= [];
 L3.data.patches =   [];   % Save training patches from sensor?
 L3.data.ideal = [];   % These are the ideal (correct) values.
 
+L3 = L3Initialize(L3);
 
 %%
 % Set according to name?  Or just do parameter assignments?
