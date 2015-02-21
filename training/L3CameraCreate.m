@@ -5,6 +5,11 @@ function camera = L3CameraCreate(L3)
 %
 % Copyright Vistasoft Team, 2012
 
+%% Should be just
+L3 = L3Create;
+camera1 = cameraCreate('L3',L3);
+
+%% 
 camera.name   = 'L3';
 camera.type   = 'camera';
 camera.oi = oiClearData(L3Get(L3,'oi'));
