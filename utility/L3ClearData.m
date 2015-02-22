@@ -16,6 +16,7 @@ L3small = L3Create;
 L3small = L3Set(L3small,'name',L3Get(L3,'name'));
 L3small = L3Set(L3small,'type',L3Get(L3,'type'));
 
+L3small = L3Set(L3small,'scenes',[]);  % Empty the training scenes
 L3small = L3Set(L3small,'design sensor',sensorClearData(L3Get(L3,'design sensor')));
 L3small = L3Set(L3small,'oi',oiClearData(L3Get(L3,'oi')));
 

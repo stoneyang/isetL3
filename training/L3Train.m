@@ -27,6 +27,12 @@ function L3 = L3Train(L3)
 %
 % (c) Stanford VISTA Team, 2013
 
+%%
+if ieNotDefined('L3'), error('L3 required'); end
+
+showBar = ieSessionGet('wait bar');
+if showBar, wbar = waitbar(0,'Train: Noise free'); end
+
 %% Compute sensor volts for a monochrome sensor
 [desiredIm, inputIm] = L3SensorImageNoNoise(L3);
 
@@ -47,15 +53,22 @@ for ii = 1 : length(inputIm)
 end
 
 %% Load texture tree variables
-numclusters    = L3Get(L3,'n clusters');
-lumList    = L3Get(L3,'luminance list');
+numclusters = L3Get(L3,'n clusters');
+lumList     = L3Get(L3,'luminance list');
 
 %% Main loop
 cfaPattern = sensorGet(L3Get(L3,'sensor design'),'cfa pattern');
+cnt = 0;
 for rr=1:size(cfaPattern,1)
     for cc=1:size(cfaPattern,2)
-        disp('**********Patch Type**********');
-        disp([rr,cc]);
+        if showBar
+            cnt = cnt + 1;
+            wTime = cnt/numel(cfaPattern);
+            waitbar(wTime,wbar,sprintf('Train Patch Type [%i,%i] ',rr,cc));
+        end
+        
+        %         disp('**********Patch Type**********');
+        %         disp([rr,cc]);
         
         L3 = L3Set(L3,'patch type',[rr,cc]);   % Refers to CFA pattern position
 
@@ -81,8 +94,9 @@ for rr=1:size(cfaPattern,1)
             L3 = L3Set(L3, 'saturation type', saturationtype);
             
             saturationcase = L3Get(L3,'saturation list', saturationtype);
-            disp('****Saturation Type****');
-            disp(saturationcase);
+
+            fprintf('Saturation type - \n')
+            disp(saturationcase');
             
             % Let's try to move this outside of the saturation loop.  That
             % way we only will have to load once per patch type.
@@ -95,7 +109,7 @@ for rr=1:size(cfaPattern,1)
             for ll=1:length(lumList)
                 %Set current patch luminance index for training
                 L3 = L3Set(L3,'luminance type',ll);
-                disp(ll);
+                fprintf('Luminance type - %i\n',ll);
 
                 % Scale the light so that each patch has desired luminance
                 L3 = L3AdjustPatchLuminance(L3);
@@ -278,5 +292,7 @@ for rr=1:size(cfaPattern,1)
         
     end  % end loop for patch type col
 end  % end loop for patch type row
+
+if showBar, delete(wbar); end
 
 end

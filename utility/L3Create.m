@@ -70,6 +70,7 @@ L3.clusters= [];
 L3.data.patches =   [];   % Save training patches from sensor?
 L3.data.ideal = [];   % These are the ideal (correct) values.
 
+% This adds training scenes.  
 L3 = L3Initialize(L3);
 
 %%
