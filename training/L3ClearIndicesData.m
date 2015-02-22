@@ -1,5 +1,4 @@
 function L3 = L3ClearIndicesData(L3)
-
 % Clear flat and saturation indices from L3 structure
 %
 % L3 = L3ClearIndicesData(L3)
@@ -28,4 +27,6 @@ if isfield(L3.training, 'saturationindices')
 end
 if isfield(L3.rendering, 'transitionindices')
     L3.rendering.transitionindices = [];
+end
+
 end
