@@ -1,9 +1,9 @@
 function [desiredIm, inputIm] = L3SensorImageNoNoise(L3)
-% Compute sensor volts for a monochrome sensor
+% Compute sensor volts for the L3 monochrome sensor
 %
 %   [desiredIm, inputIm] = L3SensorImageNoNoise(L3)
 %
-% Compute the monochromne sensor pixel voltages for a series of filters in
+% Compute the monochrome sensor pixel voltages for a series of filters in
 % the monochrome sensor.
 %
 % Inputs:
@@ -34,22 +34,32 @@ for ii=1:nScenes
     thisScene = L3Get(L3,'scene',ii);
 
     %% Compute input images    
+    % Perhaps we could check whether the scenes come in with the right
+    % training illuminant,
     thisScene = sceneAdjustIlluminant(thisScene, trainingillum);
-    
     oi = oiCompute(oi,thisScene);
 
-    sensorM = sensorSet(sensorM, 'NoiseFlag',0);  % Turn off noise, keep analog-gain/offset, clipping, quantization    
+    % Turn off noise, keep analog-gain/offset, clipping, quantization    
+    sensorM = sensorSet(sensorM, 'NoiseFlag',0);  
     cFilters = L3Get(L3,'design filter transmissivities');
+    
+    % There is a way to compute the full three mosaics using
+    % sensorComputeFullArray, rather than this monoCompute() method. We
+    % should use that. I think this could just be
+    %    sensorComputeFullArray(sensorM,oi,cFilters)
+    % and we should check.  The one issue is that this produces a cell
+    % array, while the function produces a 3D matrix. (BW) 
     inputIm{ii} = monoCompute(sensorM,oi,cFilters);
 
     %% Compute ideal images
-    % recompute oi if illuminant has changed
+    % We need to recompute the oi if the rendering illuminant differs
+    % from the training illuminant.  But not otherwise
     if ~strcmpi(trainingillum,renderingillum)
         thisScene = sceneAdjustIlluminant(thisScene, renderingillum);
         oi = oiCompute(oi,thisScene);
     end
 
-    % Turn off noise, analog-gain/offset, clipping, quantization    
+    % Turn off all sensor noise, analog-gain/offset, clipping, quantization
     sensorM = sensorSet(sensorM,'NoiseFlag',-1);
     wave = sensorGet(sensorM,'wave');
     cFilters = L3Get(L3,'ideal filter transmissivities',wave);
@@ -61,7 +71,8 @@ end
 
 % Image with individual monochrome sensor
 function im = monoCompute(sensorM,oi,cFilters)
-
+%
+% This is basically the same as sensorComputeFullArray.
 sz = sensorGet(sensorM,'size');
 
 numChannels=size(cFilters,2);
