@@ -38,6 +38,8 @@ for ii=1:nScenes
     % training illuminant,
     thisScene = sceneAdjustIlluminant(thisScene, trainingillum);
     oi = oiCompute(oi,thisScene);
+    % Debug
+    vcAddObject(oi); oiWindow;
 
     % Turn off noise, keep analog-gain/offset, clipping, quantization    
     sensorM = sensorSet(sensorM, 'NoiseFlag',0);  
@@ -50,6 +52,7 @@ for ii=1:nScenes
     % and we should check.  The one issue is that this produces a cell
     % array, while the function produces a 3D matrix. (BW) 
     inputIm{ii} = monoCompute(sensorM,oi,cFilters);
+    % vcNewGraphWin;  imagescRGB(inputIm{ii}); title('Input'); pause(0.5);
 
     %% Compute ideal images
     % We need to recompute the oi if the rendering illuminant differs
@@ -60,10 +63,12 @@ for ii=1:nScenes
     end
 
     % Turn off all sensor noise, analog-gain/offset, clipping, quantization
-    sensorM = sensorSet(sensorM,'NoiseFlag',-1);
-    wave = sensorGet(sensorM,'wave');
+    sensorM  = sensorSet(sensorM,'NoiseFlag',-1);
+    wave     = sensorGet(sensorM,'wave');
     cFilters = L3Get(L3,'ideal filter transmissivities',wave);
     desiredIm{ii} = monoCompute(sensorM,oi,cFilters);
+    % vcNewGraphWin; imagescRGB(xyz2srgb(desiredIm{ii}));  title('Desired'), pause(0.5);
+
 end
 
 end
@@ -74,6 +79,7 @@ function im = monoCompute(sensorM,oi,cFilters)
 %
 % This is basically the same as sensorComputeFullArray.
 sz = sensorGet(sensorM,'size');
+% vcAddObject(oi); oiWindow;
 
 numChannels=size(cFilters,2);
 im = zeros(sz(1),sz(2),numChannels);
@@ -81,8 +87,8 @@ for kk=1:numChannels
     
     s = sensorSet(sensorM,'filterspectra',cFilters(:,kk));
     s = sensorSet(s,'Name',sprintf('Channel-%.0f',kk));
-    s = sensorCompute(s,oi,0);
-    % vcAddAndSelectObject(s); sensorImageWindow
+    s = sensorCompute(s,oi,0);     % No show bar
+    % vcAddAndSelectObject(s); sensorWindow; pause(0.5)
     
     im(:,:,kk) = sensorGet(s,'volts');
 end

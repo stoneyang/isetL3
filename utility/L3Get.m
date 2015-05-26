@@ -404,8 +404,8 @@ switch(param)
         if ~isempty(varargin)
             % Interpolation requested.
             wave = varargin{1};
-            if isequal(idealWave(:),wave(:)), return;  % Interpolation not needed.
-            else  val = interp1(idealWave,val,wave);   % Interpolate
+            if isequal(idealWave(:),wave(:)), return;            % Interpolation not needed.
+            else  val = interp1(idealWave,val,wave,'pchip',0);   % Interpolate with  piecewise cubi and extrap to 0
             end
         end
         

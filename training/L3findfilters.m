@@ -1,22 +1,18 @@
 function filters = L3findfilters(L3,noiseFlag,patchindices,symmetryflag)
 %L3FINDFILTERS calculates Wiener filters for patches in a specific cluster
 %
-%    filters= L3findfilter(L3,noiseflag,patchindices,symmetryflag)
+%    filters = L3findfilter(L3,noiseflag,patchindices,symmetryflag)
 %
 % INPUTS:
 %   L3:         L3 structure
-%   noiseflag:  scalar indicating whether the filter should be optimized
-%               assuming the incoming patch measurements will be further 
-%               corrupted by noise that is not already in patches
-%               (0 means fit assuming no noise will be added later,
-%                otherwise fit assuming noise will be added later)
+%   noiseflag:  Pptimize assuming the incoming patch measurements will be 
+%               corrupted by noise in subsequent processing (1) or not (0). 
 %   patchindices:  vector of binaries describing which patches belong to
-%                    the cluster
-%   symmetryflag: 0 or 1 saying whether to make filter be symmetric over
-%                 certain directions
+%                  the cluster
+%   symmetryflag: Make filter be symmetric over certain directions
 %
 % OUTPUTS:
-%   filters:     matrix giving Wiener filter, estimate = filters * patches
+%   filters:     Wiener filter matrix: estimate = filters * patches
 %
 % (c) Stanford VISTA Team 2013
 
@@ -99,4 +95,4 @@ if symmetryflag
     filters = L3enforcesymmetry(filters, nIdealFilters, blockpattern, flip);
 end
 
-return
+end

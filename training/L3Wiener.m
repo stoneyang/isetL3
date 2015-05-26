@@ -24,7 +24,7 @@ function filters=L3Wiener(inputs,outputs,noisevar)
 
 if any(size(noisevar)==1), noisevar=diag(noisevar); end
 
-filters=((inputs*inputs'+noisevar)\(inputs*outputs'))';
+filters=((inputs*inputs' + noisevar)\(inputs*outputs'))';
 
 %  Above line is equivalent to the following:
 %     A=inputs*inputs'+diag(noisevar);

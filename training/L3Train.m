@@ -35,7 +35,8 @@ if showBar, wbar = waitbar(0,'Train: Noise free'); end
 
 %% Compute sensor volts for a monochrome sensor
 [desiredIm, inputIm] = L3SensorImageNoNoise(L3);
-
+% Let's check the inputIm and desiredIm
+%
 %% Delete any offset
 
 % Perhaps we should simply zero out the offset at the time of simulation?
@@ -52,6 +53,15 @@ for ii = 1 : length(inputIm)
     % above is because    volts = (volts + ao)/ag (see sensorCompute)
 end
 
+%% Check the input images and desired images for sense
+vcNewGraphWin([],'tall'); 
+for ii=1:length(inputIm)
+   subplot(2,1,1); imagescRGB(inputIm{ii});
+   subplot(2,1,2), imagescRGB(xyz2srgb(desiredIm{ii}));
+   pause(0.5);
+end
+
+   
 %% Load texture tree variables
 numclusters = L3Get(L3,'n clusters');
 lumList     = L3Get(L3,'luminance list');
